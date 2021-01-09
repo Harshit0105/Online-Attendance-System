@@ -1,1 +1,2 @@
 //AuthScreen
+static name="dcnjd";
