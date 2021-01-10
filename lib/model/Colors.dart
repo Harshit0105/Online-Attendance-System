@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-final Color blue = Colors.amber;
-<<<<<<< HEAD
-final Color pink = Colors.amber;
-=======
-final Color red =  Colors.amber;
->>>>>>> 21cb18522d6840f5338dd1b168208e07b709fde9
+class CustomeColors {
+  static const Color purple = Color.fromRGBO(104, 45, 245, 0.96);
+  static const Color skyBlue = Color.fromRGBO(56, 240, 230, 0.94);
+  static const Color yellow = Color.fromRGBO(245, 226, 22, 0.96);
+  static const Color lightBlue = Color.fromRGBO(89, 134, 240, 0.94);
+  static const Color lightBrown = Color.fromRGBO(240, 101, 118, 0.94);
+}
