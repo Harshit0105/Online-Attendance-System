@@ -2,6 +2,7 @@ import 'package:E_Attendance/screen/adminHomeScreen.dart';
 import 'package:E_Attendance/screen/dummy.dart';
 import 'package:E_Attendance/screen/facultyHomeScreen.dart';
 import 'package:E_Attendance/screen/studentHomeScreen.dart';
+import 'package:E_Attendance/service/authService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -50,12 +51,14 @@ class _MyAppState extends State<MyApp> {
         AdminHomeScreen.routeName: (ctx) => AdminHomeScreen(),
         StudentHomeScreen.routeName: (ctx) => StudentHomeScreen(),
         FacultyHomeScreen.routeName: (ctx) => FacultyHomeScreen(),
+        HomePage.routeName: (ctx) => HomePage(),
       },
     );
   }
 }
 
 class HomePage extends StatelessWidget {
+  static const routeName = "./HomePage";
   const HomePage({
     Key key,
   }) : super(key: key);
@@ -68,8 +71,7 @@ class HomePage extends StatelessWidget {
       builder: (ctx, userSnapShot) {
         if (userSnapShot.hasData) {
           final User user = FirebaseAuth.instance.currentUser;
-          final firestoreInstance = FirebaseFirestore.instance;
-          firestoreInstance
+          FirebaseFirestore.instance
               .collection("users")
               .doc(user.uid)
               .get()
@@ -77,16 +79,19 @@ class HomePage extends StatelessWidget {
             print(user.uid);
             if (value.data()['role'] == "admin") {
               print(value.data()['role']);
-              return AdminHomeScreen();
-              // Navigator.pushNamed(context, AdminHomeScreen.routeName);
+              // return AdminHomeScreen();
+              Navigator.of(context)
+                  .pushReplacementNamed(AdminHomeScreen.routeName);
             } else if (value.data()['role'] == "faculty") {
               print(value.data()['role']);
-              Navigator.pushNamed(context, FacultyHomeScreen.routeName);
+              // return FacultyHomeScreen();
+              Navigator.of(context).pushNamed(FacultyHomeScreen.routeName);
             } else if (value.data()['role'] == "student") {
               print(value.data()['role']);
-              Navigator.pushNamed(context, StudentHomeScreen.routeName);
+              // return StudentHomeScreen();
+              Navigator.of(context).pushNamed(StudentHomeScreen.routeName);
             } else {
-              return AuthScreen();
+              return Dummy();
             }
           });
         }

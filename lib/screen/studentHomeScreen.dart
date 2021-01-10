@@ -1,3 +1,4 @@
+import 'package:E_Attendance/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,8 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
         child: FlatButton(
             onPressed: () {
               FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  HomePage.routeName, (route) => false);
             },
             child: Center(child: Text("Logout"))),
       ),

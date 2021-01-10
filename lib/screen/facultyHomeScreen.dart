@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../main.dart';
+
 class FacultyHomeScreen extends StatefulWidget {
   static const routeName = "./FacultyHomeScreen";
   FacultyHomeScreen({Key key}) : super(key: key);
@@ -20,6 +22,8 @@ class _FacultyHomeScreenState extends State<FacultyHomeScreen> {
         child: FlatButton(
             onPressed: () {
               FirebaseAuth.instance.signOut();
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  HomePage.routeName, (route) => false);
             },
             child: Center(child: Text("Logout"))),
       ),
