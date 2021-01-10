@@ -12,7 +12,7 @@ class Dummy extends StatelessWidget {
             onPressed: () {
               FirebaseAuth.instance.signOut();
             },
-            child: Text("Logout")),
+            child: Center(child: Text("Logout"))),
       ),
     );
   }

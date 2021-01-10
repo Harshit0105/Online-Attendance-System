@@ -1,9 +1,14 @@
+import 'package:E_Attendance/screen/adminHomeScreen.dart';
+import 'package:E_Attendance/screen/dummy.dart';
+import 'package:E_Attendance/screen/facultyHomeScreen.dart';
+import 'package:E_Attendance/screen/studentHomeScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import './screen/authScreen.dart';
-import './screen/dummy.dart';
+import './screen/adminHomeScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -41,6 +46,11 @@ class _MyAppState extends State<MyApp> {
           return Center(child: CircularProgressIndicator());
         },
       ),
+      routes: {
+        AdminHomeScreen.routeName: (ctx) => AdminHomeScreen(),
+        StudentHomeScreen.routeName: (ctx) => StudentHomeScreen(),
+        FacultyHomeScreen.routeName: (ctx) => FacultyHomeScreen(),
+      },
     );
   }
 }
@@ -57,7 +67,28 @@ class HomePage extends StatelessWidget {
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (ctx, userSnapShot) {
         if (userSnapShot.hasData) {
-          return Dummy();
+          final User user = FirebaseAuth.instance.currentUser;
+          final firestoreInstance = FirebaseFirestore.instance;
+          firestoreInstance
+              .collection("users")
+              .doc(user.uid)
+              .get()
+              .then((value) {
+            print(user.uid);
+            if (value.data()['role'] == "admin") {
+              print(value.data()['role']);
+              return AdminHomeScreen();
+              // Navigator.pushNamed(context, AdminHomeScreen.routeName);
+            } else if (value.data()['role'] == "faculty") {
+              print(value.data()['role']);
+              Navigator.pushNamed(context, FacultyHomeScreen.routeName);
+            } else if (value.data()['role'] == "student") {
+              print(value.data()['role']);
+              Navigator.pushNamed(context, StudentHomeScreen.routeName);
+            } else {
+              return AuthScreen();
+            }
+          });
         }
         return AuthScreen();
       },

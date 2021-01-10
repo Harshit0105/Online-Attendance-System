@@ -45,8 +45,21 @@ class _AuthFormState extends State<AuthForm> {
               key: _formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  Center(
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: new Image.asset("assets/images/logo2.png"),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 25,
+                  ),
                   Container(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -81,6 +94,7 @@ class _AuthFormState extends State<AuthForm> {
                               bottom: 2,
                             ),
                             child: TextFormField(
+                              cursorColor: Colors.black,
                               textInputAction: TextInputAction.next,
                               onEditingComplete: () => node.nextFocus(),
                               focusNode: _emailFocus,
@@ -144,6 +158,7 @@ class _AuthFormState extends State<AuthForm> {
                               bottom: 2,
                             ),
                             child: TextFormField(
+                              cursorColor: Colors.black,
                               textInputAction: TextInputAction.done,
                               onEditingComplete: () => node.unfocus(),
                               focusNode: _passwordFocus,

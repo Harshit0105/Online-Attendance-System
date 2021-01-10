@@ -29,11 +29,12 @@ class _AuthScreenState extends State<AuthScreen> {
         _isLoading = false;
       });
     } catch (error) {
-      var message = 'An error occured,please check your credentials!';
+      var message =
+          'An error occured,please check your connection or credentials!';
       print(error);
-      if (error.message != null) {
-        message = error.message;
-      }
+      // if (error.message != null) {
+      //   message = error.message;
+      // }
       Scaffold.of(ctx).showSnackBar(SnackBar(
         content: Text(message),
         backgroundColor: Colors.grey,
@@ -54,12 +55,15 @@ class _AuthScreenState extends State<AuthScreen> {
             end: Alignment.bottomCenter,
             colors: [
               ///////
-              Color(0xff0F2027),
-              Color(0xff203A43),
-              Color(0xff2C5364),
+              // Color(0xff0F2027),
+              // Color(0xff203A43),
+              // Color(0xff2C5364),
               //////
-              // Color(0xff4B79A1),
-              // Color(0xff283E51),
+              Color(0xff4B79A1),
+              Color(0xff283E51),
+              /////////
+              // Color(0xffE4E5E6),
+              // Color(0xff00416A),
               //////
               // Color(0xff616161),
               // Color(0xff9bc5c3),
