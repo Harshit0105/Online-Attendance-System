@@ -1,10 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 
 import '../widgets/AuthForm.dart';
-import '../model/Colors.dart';
-//AuthScreen
-import 'package:flutter/material.dart';
 
 class AuthScreen extends StatefulWidget {
   AuthScreen({Key key}) : super(key: key);
@@ -50,16 +47,24 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromRGBO(89, 84, 97, 0.58),
-                Color.fromRGBO(147, 162, 171, 0.67)
-              ]),
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              ///////
+              Color(0xff0F2027),
+              Color(0xff203A43),
+              Color(0xff2C5364),
+              //////
+              // Color(0xff4B79A1),
+              // Color(0xff283E51),
+              //////
+              // Color(0xff616161),
+              // Color(0xff9bc5c3),
+            ],
+          ),
         ),
         child: AuthForm(
           _saveAuthForm,

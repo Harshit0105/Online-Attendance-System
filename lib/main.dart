@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        fontFamily: "PottaOne",
+        fontFamily: "YuseiMagic",
       ),
       home: FutureBuilder(
         future: Firebase.initializeApp(),
