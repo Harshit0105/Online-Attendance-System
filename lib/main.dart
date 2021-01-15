@@ -1,12 +1,14 @@
-import 'package:E_Attendance/screen/adminHomeScreen.dart';
-import 'package:E_Attendance/screen/dummy.dart';
-import 'package:E_Attendance/screen/facultyHomeScreen.dart';
-import 'package:E_Attendance/screen/studentHomeScreen.dart';
-import 'package:E_Attendance/service/authService.dart';
+import 'package:E_Attendance/screen/AddFaculty.dart';
+import 'package:E_Attendance/screen/addStudent.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+import 'package:E_Attendance/screen/adminHomeScreen.dart';
+import 'package:E_Attendance/screen/dummy.dart';
+import 'package:E_Attendance/screen/facultyHomeScreen.dart';
+import 'package:E_Attendance/screen/studentHomeScreen.dart';
 
 import './screen/authScreen.dart';
 import './screen/adminHomeScreen.dart';
@@ -33,7 +35,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.cyan,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         fontFamily: "YuseiMagic",
       ),
@@ -51,6 +53,8 @@ class _MyAppState extends State<MyApp> {
         AdminHomeScreen.routeName: (ctx) => AdminHomeScreen(),
         StudentHomeScreen.routeName: (ctx) => StudentHomeScreen(),
         FacultyHomeScreen.routeName: (ctx) => FacultyHomeScreen(),
+        AddStudent.routeName: (ctx) => AddStudent(),
+        AddFaculty.routeName: (ctx) => AddFaculty(),
         HomePage.routeName: (ctx) => HomePage(),
       },
     );
@@ -76,12 +80,14 @@ class HomePage extends StatelessWidget {
               .doc(user.uid)
               .get()
               .then((value) {
-            print(user.uid);
+            // print(user.uid);
             if (value.data()['role'] == "admin") {
               print(value.data()['role']);
               // return AdminHomeScreen();
-              Navigator.of(context)
-                  .pushReplacementNamed(AdminHomeScreen.routeName);
+              Navigator.of(context).pushReplacementNamed(
+                AdminHomeScreen.routeName,
+                arguments: value.data()['dept'],
+              );
             } else if (value.data()['role'] == "faculty") {
               print(value.data()['role']);
               // return FacultyHomeScreen();
