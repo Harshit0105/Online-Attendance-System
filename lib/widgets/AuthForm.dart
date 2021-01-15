@@ -164,7 +164,7 @@ class _AuthFormState extends State<AuthForm> {
                               focusNode: _passwordFocus,
                               key: ValueKey('password'),
                               validator: (value) {
-                                if (value.isEmpty || value.length != 10) {
+                                if (value.isEmpty || value.length < 10) {
                                   return 'Please provide valid password!';
                                 }
                                 return null;

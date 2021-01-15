@@ -1,53 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class StudentRegistrationForm extends StatefulWidget {
-  StudentRegistrationForm({Key key, this.submitFn, this.isLoading, this.dept})
+class FacultyRegistrationForm extends StatefulWidget {
+  FacultyRegistrationForm({Key key, this.submitFn, this.isLoading, this.dept})
       : super(key: key);
   final bool isLoading;
   final String dept;
   final void Function(
     String name,
-    String id,
-    String mobile,
+    String email,
+    String password,
     String birthDate,
+    String mobile,
     String gender,
     String department,
-    String sem,
-    String batch,
     BuildContext ctx,
   ) submitFn;
+
   @override
-  _StudentRegistrationFormState createState() =>
-      _StudentRegistrationFormState();
+  _FacultyRegistrationFormState createState() =>
+      _FacultyRegistrationFormState();
 }
 
-class _StudentRegistrationFormState extends State<StudentRegistrationForm> {
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-  }
-
+class _FacultyRegistrationFormState extends State<FacultyRegistrationForm> {
   final _formKey = GlobalKey<FormState>();
   final DateFormat formatter = DateFormat('dd/MM/yyyy');
 
   String _name = "";
-  String _id = "";
+  String _email = "";
   String _mobile = "";
   String _birthDate = "";
   String _gender = "";
   String _department = "";
-  String _sem = "";
-  String _batch = "";
+  String _password = "";
   FocusNode _nameFocus;
-  FocusNode _idFocus;
+  FocusNode _emailFocus;
   FocusNode _mobileFocus;
-
+  FocusNode _passwordFocus;
   DateTime _selectedDate;
   String genderRadio;
-  List<String> _batches;
-  List<String> _semesters = ["1", '2', '3', '4', '5', '6', '7', '8'];
+
   void radioButtonChanges(String value) {
     setState(() {
       genderRadio = value;
@@ -73,28 +65,6 @@ class _StudentRegistrationFormState extends State<StudentRegistrationForm> {
     setState(() {
       genderRadio = "Male";
       _gender = "Male";
-      _sem = "1";
-      switch (widget.dept) {
-        case "CE":
-          _batches = ["C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4"];
-          break;
-        case "MH":
-          // TODO: change batches for MH
-          _batches = ["C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4"];
-          break;
-        case "IT":
-          // TODO: change batches for IT
-          _batches = ["C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4"];
-          break;
-        case "CH":
-          // TODO: change batches for CH
-          _batches = ["C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4"];
-          break;
-        default:
-          _batches = ["C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4"];
-          break;
-      }
-      _batch = _batches[0];
     });
     super.initState();
   }
@@ -121,13 +91,12 @@ class _StudentRegistrationFormState extends State<StudentRegistrationForm> {
       });
       widget.submitFn(
         _name.trim(),
-        _id.trim(),
-        _mobile.trim(),
+        _email.trim(),
+        _password.trim(),
         _birthDate.trim(),
+        _mobile.trim(),
         _gender.trim(),
         _department.trim().toUpperCase(),
-        _sem.trim(),
-        _batch.trim().toUpperCase(),
         context,
       );
     }
@@ -137,7 +106,7 @@ class _StudentRegistrationFormState extends State<StudentRegistrationForm> {
     showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(1990),
+      firstDate: DateTime(1800),
       lastDate: DateTime.now(),
     ).then((value) {
       if (value == null) {
@@ -237,7 +206,7 @@ class _StudentRegistrationFormState extends State<StudentRegistrationForm> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Student ID",
+                          "Email ID",
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 20,
@@ -269,25 +238,92 @@ class _StudentRegistrationFormState extends State<StudentRegistrationForm> {
                               cursorColor: Colors.black,
                               textInputAction: TextInputAction.next,
                               onEditingComplete: () => node.nextFocus(),
-                              focusNode: _idFocus,
-                              key: ValueKey('id'),
+                              focusNode: _emailFocus,
+                              key: ValueKey('email'),
                               validator: (value) {
-                                if (value.isEmpty || value.length != 10) {
-                                  return 'Please enter a valid ID';
+                                if (value.isEmpty ||
+                                    !value.contains('@') ||
+                                    !value.contains('.com')) {
+                                  return 'Please enter a valid email address';
                                 }
                                 return null;
                               },
-                              keyboardType: TextInputType.name,
+                              keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 focusColor: Colors.black,
                               ),
                               onSaved: (value) {
-                                _id = value;
+                                _email = value;
                               },
                             ),
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  //Password
+                  Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Password",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                  blurRadius: 0.2,
+                                  color: Colors.black12,
+                                  spreadRadius: 3)
+                            ],
+                            color: Colors.white,
+                            borderRadius: new BorderRadius.circular(15),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 10,
+                              right: 10,
+                              bottom: 2,
+                            ),
+                            child: TextFormField(
+                              cursorColor: Colors.black,
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () => node.nextFocus(),
+                              focusNode: _passwordFocus,
+                              key: ValueKey('password'),
+                              validator: (value) {
+                                if (value.isEmpty || value.length < 10) {
+                                  return 'Please enter a valid number(At least 10 characters)';
+                                }
+                                return null;
+                              },
+                              keyboardType: TextInputType.name,
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                focusColor: Colors.black,
+                              ),
+                              onSaved: (value) {
+                                _password = value;
+                              },
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -481,135 +517,9 @@ class _StudentRegistrationFormState extends State<StudentRegistrationForm> {
                     ),
                   ),
                   SizedBox(
-                    height: 20,
-                  ),
-                  //Semester
-                  Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Semester",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                      blurRadius: 0.2,
-                                      color: Colors.black12,
-                                      spreadRadius: 3)
-                                ],
-                                color: Colors.white,
-                                borderRadius: new BorderRadius.circular(15),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 10,
-                                  right: 2,
-                                  bottom: 2,
-                                ),
-                                child: Container(
-                                  width: 150,
-                                  child: DropdownButton(
-                                    // hint: Text('Please choose a Semester'),
-                                    value: _sem,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _sem = value;
-                                      });
-                                    },
-                                    items: _semesters.map((location) {
-                                      return DropdownMenuItem(
-                                        child: new Text(location),
-                                        value: location,
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Expanded(
-                          child: SizedBox(
-                            height: 0,
-                          ),
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Batch",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.2,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                      blurRadius: 0.2,
-                                      color: Colors.black12,
-                                      spreadRadius: 3)
-                                ],
-                                color: Colors.white,
-                                borderRadius: new BorderRadius.circular(15),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 5,
-                                  right: 0,
-                                  bottom: 2,
-                                ),
-                                child: Container(
-                                  width: 150,
-                                  child: DropdownButton(
-                                    // hint: Text('Please choose a Batch'),
-                                    value: _batch,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _batch = value;
-                                      });
-                                    },
-                                    items: _batches.map((location) {
-                                      return DropdownMenuItem(
-                                        child: new Text(location),
-                                        value: location,
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
                     height: 30,
                   ),
-                  //Batch
+                  //Add Button
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
