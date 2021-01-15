@@ -9,10 +9,10 @@ class StudentRegistrationForm extends StatefulWidget {
   final void Function(
     String name,
     String id,
-    String mobile,
     String birthDate,
     String gender,
     String department,
+    String mobile,
     String sem,
     String batch,
     BuildContext ctx,
@@ -122,10 +122,10 @@ class _StudentRegistrationFormState extends State<StudentRegistrationForm> {
       widget.submitFn(
         _name.trim(),
         _id.trim(),
-        _mobile.trim(),
         _birthDate.trim(),
         _gender.trim(),
         _department.trim().toUpperCase(),
+        _mobile.trim(),
         _sem.trim(),
         _batch.trim().toUpperCase(),
         context,
