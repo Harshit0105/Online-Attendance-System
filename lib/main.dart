@@ -1,5 +1,7 @@
 import 'package:E_Attendance/screen/AddFaculty.dart';
 import 'package:E_Attendance/screen/addStudent.dart';
+import 'package:E_Attendance/screen/showStudents.dart';
+import 'package:E_Attendance/screen/showFaculty.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -55,6 +57,8 @@ class _MyAppState extends State<MyApp> {
         FacultyHomeScreen.routeName: (ctx) => FacultyHomeScreen(),
         AddStudent.routeName: (ctx) => AddStudent(),
         AddFaculty.routeName: (ctx) => AddFaculty(),
+        ShowStudentScreen.routeName: (ctx) => ShowStudentScreen(),
+        ShowFacultyScreen.routeName: (ctx) => ShowFacultyScreen(),
         HomePage.routeName: (ctx) => HomePage(),
       },
     );
@@ -91,11 +95,17 @@ class HomePage extends StatelessWidget {
             } else if (value.data()['role'] == "faculty") {
               print(value.data()['role']);
               // return FacultyHomeScreen();
-              Navigator.of(context).pushNamed(FacultyHomeScreen.routeName);
+              Navigator.of(context).pushReplacementNamed(
+                FacultyHomeScreen.routeName,
+                arguments: value.data()['dept'],
+              );
             } else if (value.data()['role'] == "student") {
               print(value.data()['role']);
               // return StudentHomeScreen();
-              Navigator.of(context).pushNamed(StudentHomeScreen.routeName);
+              Navigator.of(context).pushReplacementNamed(
+                StudentHomeScreen.routeName,
+                arguments: value.data()['dept'],
+              );
             } else {
               return Dummy();
             }

@@ -1,6 +1,8 @@
 import 'package:E_Attendance/model/Colors.dart';
 import 'package:E_Attendance/screen/AddFaculty.dart';
 import 'package:E_Attendance/screen/addStudent.dart';
+import 'package:E_Attendance/screen/showStudents.dart';
+import 'package:E_Attendance/screen/showFaculty.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -45,9 +47,16 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        elevation: 3,
-        backgroundColor: CustomeColors.skyBlue,
+        elevation: 5,
+        shadowColor: Colors.white,
+        backgroundColor: Colors.cyan,
         actions: [
+          IconButton(
+            icon: Icon(Icons.account_circle),
+            onPressed: () {
+              print("User Profile");
+            },
+          ),
           IconButton(
             icon: Icon(Icons.exit_to_app),
             onPressed: () {
@@ -64,6 +73,18 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             SizedBox(
               height: 5,
             ),
+            AdminHomeListTile(
+              title: "View Faculties",
+              forward: _forward,
+              route: ShowFacultyScreen.routeName,
+            ),
+            Divider(),
+            AdminHomeListTile(
+              title: "View Students",
+              forward: _forward,
+              route: ShowStudentScreen.routeName,
+            ),
+            Divider(),
             AdminHomeListTile(
               title: "Add Student",
               forward: _forward,

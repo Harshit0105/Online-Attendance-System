@@ -9,7 +9,6 @@ class FacultyRegistrationForm extends StatefulWidget {
   final void Function(
     String name,
     String email,
-    String password,
     String birthDate,
     String mobile,
     String gender,
@@ -32,11 +31,10 @@ class _FacultyRegistrationFormState extends State<FacultyRegistrationForm> {
   String _birthDate = "";
   String _gender = "";
   String _department = "";
-  String _password = "";
+
   FocusNode _nameFocus;
   FocusNode _emailFocus;
   FocusNode _mobileFocus;
-  FocusNode _passwordFocus;
   DateTime _selectedDate;
   String genderRadio;
 
@@ -92,7 +90,6 @@ class _FacultyRegistrationFormState extends State<FacultyRegistrationForm> {
       widget.submitFn(
         _name.trim(),
         _email.trim(),
-        _password.trim(),
         _birthDate.trim(),
         _mobile.trim(),
         _gender.trim(),
@@ -259,71 +256,6 @@ class _FacultyRegistrationFormState extends State<FacultyRegistrationForm> {
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  //Password
-                  Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Password",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                  blurRadius: 0.2,
-                                  color: Colors.black12,
-                                  spreadRadius: 3)
-                            ],
-                            color: Colors.white,
-                            borderRadius: new BorderRadius.circular(15),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 10,
-                              right: 10,
-                              bottom: 2,
-                            ),
-                            child: TextFormField(
-                              cursorColor: Colors.black,
-                              textInputAction: TextInputAction.next,
-                              onEditingComplete: () => node.nextFocus(),
-                              focusNode: _passwordFocus,
-                              key: ValueKey('password'),
-                              validator: (value) {
-                                if (value.isEmpty || value.length < 10) {
-                                  return 'Please enter a valid number(At least 10 characters)';
-                                }
-                                return null;
-                              },
-                              keyboardType: TextInputType.name,
-                              obscureText: true,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                focusColor: Colors.black,
-                              ),
-                              onSaved: (value) {
-                                _password = value;
-                              },
-                            ),
-                          ),
-                        )
                       ],
                     ),
                   ),

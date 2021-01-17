@@ -19,7 +19,7 @@ class AdminHomeListTile extends StatelessWidget {
     return Container(
       height: 80,
       decoration: BoxDecoration(
-        color: Colors.cyan,
+        color: Colors.black87,
         borderRadius: BorderRadius.circular(15),
       ),
       child: ListTile(
@@ -29,6 +29,7 @@ class AdminHomeListTile extends StatelessWidget {
             this.title,
             style: TextStyle(
               fontSize: 25,
+              color: Colors.white,
             ),
           ),
         ),
@@ -37,7 +38,7 @@ class AdminHomeListTile extends StatelessWidget {
           child: Icon(
             Icons.arrow_forward,
             size: 30,
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
         onTap: () {

@@ -21,7 +21,7 @@ class _AddFacultyState extends State<AddFaculty> {
     super.didChangeDependencies();
   }
 
-  static Future<User> register(
+  Future<User> register(
       String email, String password, BuildContext context) async {
     FirebaseApp app = await Firebase.initializeApp(
         name: 'Secondary', options: Firebase.app().options);
@@ -43,12 +43,14 @@ class _AddFacultyState extends State<AddFaculty> {
         ),
       );
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void _addFaculty(
     String name,
     String email,
-    String password,
     String birthDate,
     String mobile,
     String gender,
@@ -60,7 +62,7 @@ class _AddFacultyState extends State<AddFaculty> {
     });
 
     // print(birthDate);
-    User faculty = await register(email, password, ctx);
+    User faculty = await register(email, birthDate, ctx);
     FirebaseFirestore.instance.collection("users").doc(faculty.uid).set({
       "name": name,
       "dept": dept,
