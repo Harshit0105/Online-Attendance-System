@@ -1,8 +1,10 @@
 import 'package:E_Attendance/model/Colors.dart';
 import 'package:E_Attendance/screen/AddFaculty.dart';
+import 'package:E_Attendance/screen/Showprof.dart';
 import 'package:E_Attendance/screen/addStudent.dart';
 import 'package:E_Attendance/screen/showStudents.dart';
 import 'package:E_Attendance/screen/showFaculty.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +24,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     FirebaseAuth.instance.signOut();
     Navigator.of(context)
         .pushNamedAndRemoveUntil(HomePage.routeName, (route) => false);
+    print(dept);
   }
 
   String dept;
@@ -55,6 +58,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             icon: Icon(Icons.account_circle),
             onPressed: () {
               print("User Profile");
+              //Navigator.pushNamed(context, '/Showprof');
+              Navigator.of(context).pushNamed(Showprof.routeName);
+
+//              viewprofile();
             },
           ),
           IconButton(

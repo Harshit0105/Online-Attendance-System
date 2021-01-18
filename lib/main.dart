@@ -14,6 +14,8 @@ import 'package:E_Attendance/screen/studentHomeScreen.dart';
 
 import './screen/authScreen.dart';
 import './screen/adminHomeScreen.dart';
+// ignore: unused_import
+import './screen/Showprof.dart';
 
 void main() {
   runApp(MyApp());
@@ -60,6 +62,7 @@ class _MyAppState extends State<MyApp> {
         ShowStudentScreen.routeName: (ctx) => ShowStudentScreen(),
         ShowFacultyScreen.routeName: (ctx) => ShowFacultyScreen(),
         HomePage.routeName: (ctx) => HomePage(),
+        Showprof.routeName: (ctx) => Showprof(),
       },
     );
   }
