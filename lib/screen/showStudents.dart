@@ -16,7 +16,6 @@ class _ShowStudentScreenState extends State<ShowStudentScreen> {
   String dept;
   QuerySnapshot querySnapshot;
   bool isLoading;
-
   @override
   void initState() {
     semester = "1";
@@ -40,6 +39,113 @@ class _ShowStudentScreenState extends State<ShowStudentScreen> {
   void showItemUpdateDialog(
     String docId,
     String name,
+    String batch,
+    BuildContext context,
+  ) {
+    String sName = name.toUpperCase();
+    // String _batch = '';
+    List<String> _batches;
+    switch (dept) {
+      case "CE":
+        _batches = ["C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4"];
+        break;
+      case "EC":
+        _batches = ["A1", "A2", "A3", "A4", "B1", "B2", "B3", "B4"];
+        break;
+      case "MH":
+        _batches = ["J1", "J2", "J3", "J4", "K1", "K2", "K3", "K4"];
+        break;
+      case "IT":
+        _batches = ["H1", "H2", "H3", "H4", "I1", "I2", "I3", "I4"];
+        break;
+      case "CH":
+        _batches = ["F1", "F2", "F3", "F4", "L1", "L2", "L3", "L4"];
+        break;
+      default:
+        _batches = ["C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4"];
+        break;
+    }
+    // _batch = batch;
+    var dialog = new AlertDialog(
+      title: new Text("Update student"),
+      content: StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) => Container(
+          height: 250,
+          child: new Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Batch",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                ),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                        blurRadius: 0.2, color: Colors.black12, spreadRadius: 3)
+                  ],
+                  color: Colors.white,
+                  borderRadius: new BorderRadius.circular(15),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 5,
+                    right: 0,
+                    bottom: 2,
+                  ),
+                  child: Container(
+                    width: 150,
+                    child: DropdownButton(
+                      // hint: Text('Please choose a Batch'),
+                      value: batch,
+                      onChanged: (value) {
+                        setState(() {
+                          batch = value;
+                        });
+                      },
+                      items: _batches.map((location) {
+                        return DropdownMenuItem(
+                          child: new Text(location),
+                          value: location,
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: <Widget>[
+        new FlatButton(
+            color: Colors.green,
+            child: Text("Done"),
+            onPressed: () {
+              updateStudent(docId, name, batch, context);
+              Navigator.of(context).pop();
+            }),
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) => dialog,
+    );
+  }
+
+  void showItemDeleteDialog(
+    String docId,
+    String name,
     String id,
     String pass,
     BuildContext context,
@@ -55,7 +161,7 @@ class _ShowStudentScreenState extends State<ShowStudentScreen> {
             color: Colors.black,
           ),
           children: <TextSpan>[
-            new TextSpan(text: 'Do you wanr to delete student '),
+            new TextSpan(text: 'Do you want to delete student '),
             new TextSpan(
                 text: '$sName',
                 style: new TextStyle(fontWeight: FontWeight.bold)),
@@ -110,6 +216,15 @@ class _ShowStudentScreenState extends State<ShowStudentScreen> {
     } catch (error) {
       print(error);
     }
+  }
+
+  void updateStudent(
+      String docId, String name, String batch, BuildContext context) async {
+    await FirebaseFirestore.instance
+        .collection("students")
+        // ignore: deprecated_member_use
+        .document(docId)
+        .update({"batch": batch}).then((value) => print("Success"));
   }
 
   void deleteStudent(
@@ -285,17 +400,33 @@ class _ShowStudentScreenState extends State<ShowStudentScreen> {
                               fontSize: 15,
                             ),
                           ),
-                          trailing: IconButton(
-                            icon: Icon(Icons.delete),
-                            color: Colors.red,
-                            onPressed: () {
-                              showItemUpdateDialog(
-                                  chatDoc[index].documentID,
-                                  chatDoc[index]['name'],
-                                  chatDoc[index]['id'],
-                                  chatDoc[index]['dob'],
-                                  context);
-                            },
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.edit),
+                                color: Colors.yellow,
+                                onPressed: () {
+                                  showItemUpdateDialog(
+                                      chatDoc[index].documentID,
+                                      chatDoc[index]['name'],
+                                      chatDoc[index]['batch'],
+                                      context);
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.delete),
+                                color: Colors.red,
+                                onPressed: () {
+                                  showItemDeleteDialog(
+                                      chatDoc[index].documentID,
+                                      chatDoc[index]['name'],
+                                      chatDoc[index]['id'],
+                                      chatDoc[index]['dob'],
+                                      context);
+                                },
+                              ),
+                            ],
                           ),
                           key: ValueKey(chatDoc[index].documentID),
                         ),

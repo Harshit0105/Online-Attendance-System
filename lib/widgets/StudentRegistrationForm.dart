@@ -81,6 +81,9 @@ class _StudentRegistrationFormState extends State<StudentRegistrationForm> {
         case "EC":
           _batches = ["A1", "A2", "A3", "A4", "B1", "B2", "B3", "B4"];
           break;
+        case "MH":
+          _batches = ["J1", "J2", "J3", "J4", "K1", "K2", "K3", "K4"];
+          break;
         case "IT":
           _batches = ["H1", "H2", "H3", "H4", "I1", "I2", "I3", "I4"];
           break;
