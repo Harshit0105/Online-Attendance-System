@@ -77,7 +77,7 @@ class _AddStudentState extends State<AddStudent> {
       "dob": birthDate,
       "dept": dept,
       'gender': gender,
-      'sem': sem,
+      'sem': int.parse(sem),
       'batch': batch,
       'role': "student",
     }).then((_) {

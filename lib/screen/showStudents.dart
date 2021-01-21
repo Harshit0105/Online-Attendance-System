@@ -38,12 +38,10 @@ class _ShowStudentScreenState extends State<ShowStudentScreen> {
 
   void showItemUpdateDialog(
     String docId,
-    String name,
+    String sem,
     String batch,
     BuildContext context,
   ) {
-    String sName = name.toUpperCase();
-    // String _batch = '';
     List<String> _batches;
     switch (dept) {
       case "CE":
@@ -65,7 +63,6 @@ class _ShowStudentScreenState extends State<ShowStudentScreen> {
         _batches = ["C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4"];
         break;
     }
-    // _batch = batch;
     var dialog = new AlertDialog(
       title: new Text("Update student"),
       content: StatefulBuilder(
@@ -75,6 +72,82 @@ class _ShowStudentScreenState extends State<ShowStudentScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                "Semester",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.2,
+                ),
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                        blurRadius: 0.2, color: Colors.black12, spreadRadius: 3)
+                  ],
+                  color: Colors.white,
+                  borderRadius: new BorderRadius.circular(15),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 5,
+                    right: 0,
+                    bottom: 2,
+                  ),
+                  child: Container(
+                    width: 150,
+                    child: DropdownButton(
+                      // hint: Text('Please choose a Batch'),
+                      value: sem,
+                      onChanged: (value) {
+                        setState(() {
+                          sem = value;
+                        });
+                      },
+                      items: [
+                        DropdownMenuItem(
+                          child: Text("Sem 1"),
+                          value: "1",
+                        ),
+                        DropdownMenuItem(
+                          child: Text("Sem 2"),
+                          value: "2",
+                        ),
+                        DropdownMenuItem(
+                          child: Text("Sem 3"),
+                          value: "3",
+                        ),
+                        DropdownMenuItem(
+                          child: Text("Sem 4"),
+                          value: "4",
+                        ),
+                        DropdownMenuItem(
+                          child: Text("Sem 5"),
+                          value: "5",
+                        ),
+                        DropdownMenuItem(
+                          child: Text("Sem 6"),
+                          value: "6",
+                        ),
+                        DropdownMenuItem(
+                          child: Text("Sem 7"),
+                          value: "7",
+                        ),
+                        DropdownMenuItem(
+                          child: Text("Sem 8"),
+                          value: "8",
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Divider(),
               Text(
                 "Batch",
                 style: TextStyle(
@@ -128,10 +201,11 @@ class _ShowStudentScreenState extends State<ShowStudentScreen> {
       ),
       actions: <Widget>[
         new FlatButton(
+            minWidth: 100,
             color: Colors.green,
             child: Text("Done"),
             onPressed: () {
-              updateStudent(docId, name, batch, context);
+              updateStudent(docId, sem, batch, context);
               Navigator.of(context).pop();
             }),
       ],
@@ -219,12 +293,13 @@ class _ShowStudentScreenState extends State<ShowStudentScreen> {
   }
 
   void updateStudent(
-      String docId, String name, String batch, BuildContext context) async {
+      String docId, String sem, String batch, BuildContext context) async {
     await FirebaseFirestore.instance
         .collection("students")
         // ignore: deprecated_member_use
         .document(docId)
-        .update({"batch": batch}).then((value) => print("Success"));
+        .update({"batch": batch, 'sem': int.parse(sem)}).then(
+            (value) => print("Success"));
   }
 
   void deleteStudent(
@@ -346,7 +421,7 @@ class _ShowStudentScreenState extends State<ShowStudentScreen> {
         stream: FirebaseFirestore.instance
             .collection('students')
             .where("dept", isEqualTo: dept)
-            .where("sem", isEqualTo: semester)
+            .where("sem", isEqualTo: int.parse(semester))
             .orderBy("name", descending: false)
             .snapshots(),
         builder: (ctx, chatSnapShot) {
@@ -409,7 +484,7 @@ class _ShowStudentScreenState extends State<ShowStudentScreen> {
                                 onPressed: () {
                                   showItemUpdateDialog(
                                       chatDoc[index].documentID,
-                                      chatDoc[index]['name'],
+                                      chatDoc[index]['sem'].toString(),
                                       chatDoc[index]['batch'],
                                       context);
                                 },
