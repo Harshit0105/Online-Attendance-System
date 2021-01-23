@@ -1,3 +1,4 @@
+import 'package:E_Attendance/screen/AddEvent.dart';
 import 'package:E_Attendance/screen/AddFaculty.dart';
 import 'package:E_Attendance/screen/addStudent.dart';
 import 'package:E_Attendance/screen/showStudents.dart';
@@ -63,6 +64,7 @@ class _MyAppState extends State<MyApp> {
         ShowFacultyScreen.routeName: (ctx) => ShowFacultyScreen(),
         HomePage.routeName: (ctx) => HomePage(),
         Showprof.routeName: (ctx) => Showprof(),
+        AddEventScreen.routeName: (ctx) => AddEventScreen(),
       },
     );
   }

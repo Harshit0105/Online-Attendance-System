@@ -1,3 +1,4 @@
+import 'package:E_Attendance/screen/AddEvent.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +13,13 @@ class FacultyHomeScreen extends StatefulWidget {
 }
 
 class _FacultyHomeScreenState extends State<FacultyHomeScreen> {
+  String dept;
+  @override
+  void didChangeDependencies() {
+    dept = ModalRoute.of(context).settings.arguments;
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +34,14 @@ class _FacultyHomeScreenState extends State<FacultyHomeScreen> {
                   HomePage.routeName, (route) => false);
             },
             child: Center(child: Text("Logout"))),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          print("done");
+          Navigator.of(context)
+              .pushNamed(AddEventScreen.routeName, arguments: dept);
+        },
       ),
     );
   }
