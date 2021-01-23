@@ -6,9 +6,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class AddEventForm extends StatefulWidget {
-  AddEventForm({Key key, this.isLoading, this.dept}) : super(key: key);
+  AddEventForm({Key key, this.submitFn, this.isLoading, this.dept})
+      : super(key: key);
   final bool isLoading;
   final String dept;
+  final void Function(
+    String name,
+    String desc,
+    String date,
+    String sem,
+    String batch,
+    BuildContext ctx,
+  ) submitFn;
   @override
   _AddEventFormState createState() => _AddEventFormState();
 }
@@ -16,22 +25,15 @@ class AddEventForm extends StatefulWidget {
 class _AddEventFormState extends State<AddEventForm> {
   final _formKey = GlobalKey<FormState>();
   final DateFormat formatter = DateFormat('dd/MM/yyyy');
-  String _sem;
-  String _batch;
+  String _sem = "";
+  String _batch = "";
   String _name = "";
-  String _email = "";
-  String _mobile = "";
-  String _birthDate = "";
-  String _gender = "";
-  String _department = "";
+  String _eventDate = "";
+  String _description = "";
   List<String> _batches;
   List<String> _semesters = ["1", '2', '3', '4', '5', '6', '7', '8'];
 
-  FocusNode _nameFocus;
-  FocusNode _emailFocus;
-  FocusNode _mobileFocus;
   DateTime _selectedDate;
-  String genderRadio;
 
   void _trySubmit() {
     final isValid = _formKey.currentState.validate();
@@ -47,21 +49,19 @@ class _AddEventFormState extends State<AddEventForm> {
         );
         return;
       }
-      _department = widget.dept;
-      _birthDate = "${formatter.format(_selectedDate)}";
+      _eventDate = "${formatter.format(_selectedDate)}";
       _formKey.currentState.reset();
       setState(() {
         _selectedDate = null;
       });
-      /*  widget.submitFn(
+      widget.submitFn(
         _name.trim(),
-        _email.trim(),
-        _birthDate.trim(),
-        _mobile.trim(),
-        _gender.trim(),
-        _department.trim().toUpperCase(),
+        _description.trim(),
+        _eventDate.trim(),
+        _sem.trim(),
+        _batch.trim(),
         context,
-      );*/
+      );
     }
   }
 
@@ -69,8 +69,8 @@ class _AddEventFormState extends State<AddEventForm> {
     showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(1800),
-      lastDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(Duration(days: 7)),
     ).then((value) {
       if (value == null) {
         return;
@@ -84,8 +84,6 @@ class _AddEventFormState extends State<AddEventForm> {
   @override
   void initState() {
     setState(() {
-      //  genderRadio = "Male";
-      //_gender = "Male";
       _sem = "1";
       switch (widget.dept) {
         case "CE":
@@ -107,6 +105,7 @@ class _AddEventFormState extends State<AddEventForm> {
           _batches = ["C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4"];
           break;
       }
+      _batches.insert(0, "ALL");
       _batch = _batches[0];
     });
     super.initState();
@@ -114,7 +113,6 @@ class _AddEventFormState extends State<AddEventForm> {
 
   @override
   Widget build(BuildContext context) {
-    final node = FocusScope.of(context);
     return Container(
       child: Padding(
         padding: const EdgeInsets.only(
@@ -166,9 +164,7 @@ class _AddEventFormState extends State<AddEventForm> {
                             ),
                             child: TextFormField(
                               cursorColor: Colors.black,
-                              textInputAction: TextInputAction.next,
-                              onEditingComplete: () => node.nextFocus(),
-                              focusNode: _nameFocus,
+                              textInputAction: TextInputAction.done,
                               key: ValueKey('name'),
                               validator: (value) {
                                 if (value.isEmpty) {
@@ -193,12 +189,63 @@ class _AddEventFormState extends State<AddEventForm> {
                   SizedBox(
                     height: 20,
                   ),
-                  //Student ID
-
+                  //Description
+                  Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Description",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                  blurRadius: 0.2,
+                                  color: Colors.black12,
+                                  spreadRadius: 3)
+                            ],
+                            color: Colors.white,
+                            borderRadius: new BorderRadius.circular(15),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 10,
+                              right: 10,
+                              bottom: 2,
+                            ),
+                            child: TextFormField(
+                              cursorColor: Colors.black,
+                              textInputAction: TextInputAction.done,
+                              key: ValueKey('desc'),
+                              keyboardType: TextInputType.multiline,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                focusColor: Colors.black,
+                              ),
+                              onSaved: (value) {
+                                _description = value;
+                              },
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                   SizedBox(
                     height: 20,
                   ),
-                  //Birth Date
+                  //Event Date
                   Container(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -261,12 +308,7 @@ class _AddEventFormState extends State<AddEventForm> {
                   SizedBox(
                     height: 20,
                   ),
-                  //Mobile Number
-
-                  SizedBox(
-                    height: 20,
-                  ),
-                  //Gender
+                  //Semester And Batch
                   Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -389,7 +431,6 @@ class _AddEventFormState extends State<AddEventForm> {
                       ],
                     ),
                   ),
-
                   SizedBox(
                     height: 30,
                   ),
