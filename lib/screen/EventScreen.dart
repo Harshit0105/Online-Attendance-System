@@ -1,6 +1,10 @@
 import 'package:E_Attendance/screen/ScanScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+//import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter/services.dart';
 
 import '../model/Events.dart';
 
@@ -13,12 +17,71 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
+  String barcode = "";
+
   Events event;
   @override
   void didChangeDependencies() {
     event = ModalRoute.of(context).settings.arguments;
     print(event.id);
     super.didChangeDependencies();
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(event.name),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(barcode),
+                //Text('Would you like to approve of this message?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Done'),
+              onPressed: () {
+                print(barcode);
+                //Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                'Cancel',
+                style: new TextStyle(
+                  color: Colors.red,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future scan() async {
+    try {
+      String barcode = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.QR);
+      _showMyDialog();
+      print(barcode);
+      setState(() => this.barcode = barcode);
+    } on PlatformException catch (e) {
+      setState(() => this.barcode = 'Unknown error: $e');
+    } on FormatException {
+      setState(() => this.barcode =
+          'null (User returned using the "back"-button before scanning anything. Result)');
+    } catch (e) {
+      setState(() => this.barcode = 'Unknown error: $e');
+    }
   }
 
   @override
@@ -36,9 +99,8 @@ class _EventScreenState extends State<EventScreen> {
           IconButton(
             icon: Icon(Icons.qr_code_scanner),
             color: Colors.black,
-            onPressed: () {
-              Navigator.of(context).pushNamed(ScanScreen.routeName);
-              print("QR Scanner");
+            onPressed: () async {
+              scan();
             },
           ),
         ],
