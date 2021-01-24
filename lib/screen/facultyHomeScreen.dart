@@ -1,12 +1,11 @@
 import 'package:E_Attendance/screen/AddEvent.dart';
+import 'package:E_Attendance/screen/EventScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter/material.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
 
 import '../main.dart';
+import '../model/Events.dart';
 
 class FacultyHomeScreen extends StatefulWidget {
   static const routeName = "./FacultyHomeScreen";
@@ -17,7 +16,6 @@ class FacultyHomeScreen extends StatefulWidget {
 }
 
 class _FacultyHomeScreenState extends State<FacultyHomeScreen> {
-  bool _isLoading = false;
   void logout() {
     FirebaseAuth.instance.signOut();
     Navigator.of(context)
@@ -26,6 +24,8 @@ class _FacultyHomeScreenState extends State<FacultyHomeScreen> {
   }
 
   String dept;
+  List<Events> events;
+  User usr;
   @override
   void didChangeDependencies() {
     dept = ModalRoute.of(context).settings.arguments;
@@ -34,34 +34,8 @@ class _FacultyHomeScreenState extends State<FacultyHomeScreen> {
 
   @override
   void initState() {
-    _isLoading = false;
-
-    // TODO: implement initState
-    disp();
+    usr = FirebaseAuth.instance.currentUser;
     super.initState();
-  }
-
-  void disp() async {
-    setState(() {
-      _isLoading = true;
-    });
-    print("reached");
-    final User usr = FirebaseAuth.instance.currentUser;
-    await FirebaseFirestore.instance
-        .collection("faculties")
-        .doc(usr.uid)
-        .get()
-        .then((value) {
-      //value.data()['events']
-      Set<String> set = Set.from(value.data()['events']);
-      set.forEach((element) => print(element));
-
-      // dept = value.data()['dept'];
-      //print("done");
-    });
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
@@ -79,14 +53,65 @@ class _FacultyHomeScreenState extends State<FacultyHomeScreen> {
           )
         ],
       ),
-      body: Container(
-        child: FlatButton(
-          onPressed: () {
-            FirebaseAuth.instance.signOut();
-            Navigator.of(context)
-                .pushNamedAndRemoveUntil(HomePage.routeName, (route) => false);
-          },
-        ),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('events')
+            .where("facid", isEqualTo: usr.uid)
+            .orderBy('date', descending: true)
+            .snapshots(),
+        builder: (ctx, chatSnapShot) {
+          if (chatSnapShot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final eventDoc = chatSnapShot.data.documents;
+          return ListView.builder(
+            itemCount: eventDoc.length,
+            itemBuilder: (ctx, index) => Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 5,
+                horizontal: 2,
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black87,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: ListTile(
+                  title: Text(
+                    eventDoc[index]['name'],
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                  subtitle: Text(
+                    eventDoc[index]['date'],
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pushNamed(EventScreen.routeName,
+                        arguments: new Events(
+                          id: eventDoc[index].documentID,
+                          name: eventDoc[index]['name'],
+                          desc: eventDoc[index]['description'],
+                          batch: eventDoc[index]['batch'],
+                          date: eventDoc[index]['date'],
+                          sem: eventDoc[index]['sem'],
+                        ));
+                  },
+                  key: ValueKey(eventDoc[index].documentID),
+                ),
+              ),
+            ),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),

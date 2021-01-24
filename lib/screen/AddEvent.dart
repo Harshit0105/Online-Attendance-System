@@ -71,6 +71,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
         "name": name,
         "description": desc,
         "facid": fac.uid,
+        "date": date,
         "dept": dept,
         "sem": sem,
         "batch": batch,
