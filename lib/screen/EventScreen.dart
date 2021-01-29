@@ -1,4 +1,3 @@
-import 'package:E_Attendance/screen/ScanScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -71,7 +70,9 @@ class _EventScreenState extends State<EventScreen> {
     try {
       String barcode = await FlutterBarcodeScanner.scanBarcode(
           "#ff6666", "Cancel", true, ScanMode.QR);
-      _showMyDialog();
+      if (barcode != "-1") {
+        _showMyDialog();
+      }
       print(barcode);
       setState(() => this.barcode = barcode);
     } on PlatformException catch (e) {
@@ -87,6 +88,7 @@ class _EventScreenState extends State<EventScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey,
       appBar: AppBar(
         title: Text(
           event.name.toUpperCase(),
@@ -106,132 +108,277 @@ class _EventScreenState extends State<EventScreen> {
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          child: Column(
-            children: [
-              Row(
+        padding: const EdgeInsets.all(5.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Card(
+              elevation: 3,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    child: Text("Name: "),
-                  ),
-                  Container(
-                    child: Text(event.name),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Row(
-                children: [
-                  Container(
-                    child: Text("Description: "),
-                  ),
-                  Container(
-                    child: Text(event.desc),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Row(
-                children: [
-                  Container(
-                    child: Text("Date: "),
-                  ),
-                  Container(
-                    child: Text(event.date),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Row(
-                children: [
-                  Container(
-                    child: Text("Semester: "),
-                  ),
-                  Container(
-                    child: Text(event.sem),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Row(
-                children: [
-                  Container(
-                    child: Text("Batch: "),
-                  ),
-                  Container(
-                    child: Text(event.batch),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Container(
-                child: Text("Students: "),
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              SingleChildScrollView(
-                child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection("events")
-                      .doc(event.id)
-                      .snapshots(),
-                  builder: (ctx, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting ||
-                        !snapshot.hasData) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    final doc = snapshot.data;
-                    final students = Map<String, bool>.from(doc["students"]);
-                    final keys = List<String>.from(students.keys);
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: students.length,
-                      itemBuilder: (context, index) => StreamBuilder(
-                        stream: FirebaseFirestore.instance
-                            .collection("students")
-                            .doc(keys[index])
-                            .snapshots(),
-                        builder: (ctx, stSnapShot) {
-                          if (stSnapShot.connectionState ==
-                                  ConnectionState.waiting ||
-                              !stSnapShot.hasData) {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          final stu = stSnapShot.data;
-                          return Container(
-                            child: Text(
-                              stu["name"],
-                              style: TextStyle(
-                                color: students[keys[index]] == false
-                                    ? Colors.red
-                                    : Colors.green,
-                              ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 8.0,
+                      bottom: 5,
+                      right: 8,
+                      left: 8,
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          child: Text(
+                            "Name: ",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
-                          );
-                        },
+                          ),
+                        ),
+                        Container(
+                          child: Text(
+                            event.name,
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(),
+                  // SizedBox(
+                  //   height: 5,
+                  // ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 5,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          child: Text(
+                            "Description: ",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          child: Expanded(
+                            child: Text(
+                              event.desc,
+                              style: TextStyle(
+                                fontSize: 18,
+                              ),
+                              maxLines: 10,
+                              overflow: TextOverflow.visible,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(),
+                  // SizedBox(
+                  //   height: 5,
+                  // ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 5,
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          child: Text(
+                            "Date: ",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          child: Text(
+                            event.date,
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(),
+                  // SizedBox(
+                  //   height: 5,
+                  // ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 5,
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          child: Text(
+                            "Semester: ",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          child: Text(
+                            event.sem,
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(),
+                  // SizedBox(
+                  //   height: 5,
+                  // ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          child: Text(
+                            "Batch: ",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          child: Text(
+                            event.batch,
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // SizedBox(
+                  //   height: 5,
+                  // ),
+                ],
+              ),
+            ),
+            ListTile(
+              title: Card(
+                // color: Colors.black87,
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Students ",
+                      style: TextStyle(
+                        // color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black45,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection("events")
+                          .doc(event.id)
+                          .snapshots(),
+                      builder: (ctx, snapshot) {
+                        if (snapshot.connectionState ==
+                                ConnectionState.waiting ||
+                            !snapshot.hasData) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        final doc = snapshot.data;
+                        final students =
+                            Map<String, bool>.from(doc["students"]);
+                        final keys = List<String>.from(students.keys);
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: students.length,
+                          itemBuilder: (context, index) => StreamBuilder(
+                            stream: FirebaseFirestore.instance
+                                .collection("students")
+                                .doc(keys[index])
+                                .snapshots(),
+                            builder: (ctx, stSnapShot) {
+                              if (stSnapShot.connectionState ==
+                                      ConnectionState.waiting ||
+                                  !stSnapShot.hasData) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                              final stu = stSnapShot.data;
+                              return Card(
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: ListTile(
+                                  title: Text(
+                                    stu["name"].toString().toUpperCase(),
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: students[keys[index]] == false
+                                          ? Colors.red
+                                          : Colors.green,
+                                    ),
+                                    overflow: TextOverflow.fade,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
