@@ -33,6 +33,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
     final User usr = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
+      // backgroundColor: Colors.white70,
       appBar: AppBar(
         title: Text("Student Home Screen"),
         actions: [
@@ -57,72 +58,115 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
               );
             }
             List<String> students = new List.from(snapshot.data["events"]);
-            print(students);
-            return ListView.builder(
-              itemCount: students.length,
-              itemBuilder: (context, index) {
-                return StreamBuilder(
-                    stream: FirebaseFirestore.instance
-                        .collection("events")
-                        .doc(students[index])
-                        .snapshots(),
-                    builder: (ctx, eventdata) {
-                      if (!eventdata.hasData) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      print(eventdata);
-                      var e = eventdata.data;
-                      return ListTile(
-                        title: Padding(
-                          padding: const EdgeInsets.only(bottom: 5.0),
-                          child: Text(
-                            e["name"],
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 2,
-                            ),
-                          ),
-                        ),
-                        subtitle: Text(
-                          e['date'],
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                            letterSpacing: 1,
-                          ),
-                        ),
-                        trailing: IconButton(
-                            icon: Icon(Icons.more_vert_outlined),
-                            onPressed: () {
-                              var dialog = new AlertDialog(
-                                title: new Text(e['name']),
-                                content: Text(
-                                  e['description'],
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    letterSpacing: 1,
+
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView.builder(
+                itemCount: students.length,
+                itemBuilder: (context, index) {
+                  return StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection("events")
+                          .doc(students[index])
+                          .snapshots(),
+                      builder: (ctx, eventdata) {
+                        if (!eventdata.hasData) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        var e = eventdata.data;
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    height:
+                                        (MediaQuery.of(context).size.height -
+                                                MediaQuery.of(context)
+                                                    .padding
+                                                    .top) *
+                                            0.082,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.3,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
                                   ),
-                                ),
-                                actions: <Widget>[
-                                  new FlatButton(
-                                    child: Text("Done"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: ExpansionTile(
+                                      title: Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 5.0),
+                                        child: Text(
+                                          e["name"],
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 2,
+                                          ),
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        e['date'],
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          letterSpacing: 1,
+                                        ),
+                                      ),
+                                      trailing: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                            icon: Icon(Icons.qr_code),
+                                            color: Colors.white,
+                                            onPressed: () {
+                                              print("QR Generator");
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                      key: ValueKey(e.documentID),
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white30,
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(15),
+                                              bottomRight: Radius.circular(15),
+                                            ),
+                                          ),
+                                          child: ListTile(
+                                            title: Text(
+                                              e['description'],
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                              ),
+                                              overflow: TextOverflow.fade,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
-                              );
-
-                              showDialog(context: context, child: dialog);
-                            }),
-                      );
-                    });
-              },
+                              ),
+                            ),
+                          ],
+                        );
+                      });
+                },
+              ),
             );
           }),
     );
