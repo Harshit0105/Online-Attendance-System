@@ -19,6 +19,7 @@ class _EventScreenState extends State<EventScreen> {
   String barcode = "";
   String eventName = "";
   String studentName = "";
+  String studentId = "";
   bool error = false;
 
   Events event;
@@ -48,8 +49,13 @@ class _EventScreenState extends State<EventScreen> {
               TextButton(
                 child: Text('Done'),
                 onPressed: () {
-                  print(barcode);
-                  //Navigator.of(context).pop();
+                  FirebaseFirestore.instance
+                      .collection("events")
+                      .doc(event.id)
+                      .update({
+                    "students.${this.studentId}": true,
+                  }).then((_) => print("Updated"));
+                  Navigator.of(context).pop();
                 },
               ),
             TextButton(
@@ -86,6 +92,7 @@ class _EventScreenState extends State<EventScreen> {
           setState(() {
             this.eventName = eventName;
             this.studentName = studentName;
+            this.studentId = barcodeList[2];
           });
         } else {
           setState(() {
