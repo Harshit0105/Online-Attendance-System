@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter_otp/flutter_otp.dart';
 //import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter/services.dart';
@@ -74,6 +75,47 @@ class _EventScreenState extends State<EventScreen> {
       },
     );
   }
+
+  // void otpAlertBox() {
+  //   var otpText = "";
+
+  //   var dialog = new AlertDialog(
+  //     title: new Text("Update student"),
+  //     content: StatefulBuilder(
+  //       builder: (BuildContext context, StateSetter setState) => Container(
+  //         child: new TextField(
+  //           keyboardType: TextInputType.number,
+  //           maxLength: 4,
+  //           onChanged: (value) {
+  //             otpText = value;
+  //           },
+  //         ),
+  //       ),
+  //     ),
+  //     actions: <Widget>[
+  //       new FlatButton(
+  //         minWidth: 100,
+  //         color: Colors.green,
+  //         child: Text("Done"),
+  //         onPressed: () {
+  //           Navigator.of(context).pop();
+  //         },
+  //       ),
+  //       new FlatButton(
+  //         minWidth: 100,
+  //         color: Colors.red,
+  //         child: Text("Cancle"),
+  //         onPressed: () {
+  //           Navigator.of(context).pop();
+  //         },
+  //       ),
+  //     ],
+  //   );
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext ctx) => dialog,
+  //   );
+  // }
 
   Future scan() async {
     try {
@@ -400,6 +442,17 @@ class _EventScreenState extends State<EventScreen> {
                                     ),
                                     overflow: TextOverflow.fade,
                                   ),
+                                  // trailing: IconButton(
+                                  //   icon: Icon(Icons.send),
+                                  //   color: students[keys[index]] == false
+                                  //       ? Colors.black
+                                  //       : Colors.grey,
+                                  //   onPressed: students[keys[index]] == false
+                                  //       ? () {
+                                  //           otpAlertBox();
+                                  //         }
+                                  //       : () {},
+                                  // ),
                                 ),
                               );
                             },
