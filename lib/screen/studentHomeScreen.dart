@@ -3,6 +3,8 @@ import 'package:E_Attendance/model/Events.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class StudentHomeScreen extends StatefulWidget {
   static const routeName = "./StudentHomeScreen";
@@ -13,6 +15,8 @@ class StudentHomeScreen extends StatefulWidget {
 }
 
 class _StudentHomeScreenState extends State<StudentHomeScreen> {
+  GlobalKey globalKey = new GlobalKey();
+
   bool _isLoading = false;
   void logout() {
     FirebaseAuth.instance.signOut();
@@ -26,6 +30,46 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
   void didChangeDependencies() {
     dept = ModalRoute.of(context).settings.arguments;
     super.didChangeDependencies();
+  }
+
+  void showQRGenerated(String eventId, String studentId, String eventName,
+      String studentName, BuildContext context) {
+    final media = MediaQuery.of(context);
+    _isLoading = true;
+    var qrImage = QrImage(
+      data: "DDUAttendanceSystem;" +
+          eventId +
+          ";" +
+          studentId +
+          ";" +
+          eventName +
+          ";" +
+          studentName,
+    );
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) => AlertDialog(
+        scrollable: true,
+        title: Text("QR Code"),
+        content: Center(
+          child: Container(
+            width: 0.6 * media.size.width,
+            height: 0.3 *
+                (media.size.height - media.padding.top - media.padding.bottom),
+            child: qrImage,
+          ),
+        ),
+        actions: [
+          new FlatButton(
+              minWidth: 100,
+              color: Colors.blue,
+              child: Text("Done"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
+        ],
+      ),
+    );
   }
 
   @override
@@ -58,7 +102,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
               );
             }
             List<String> students = new List.from(snapshot.data["events"]);
-
+            var studentName = snapshot.data["name"];
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
@@ -130,7 +174,12 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                             icon: Icon(Icons.qr_code),
                                             color: Colors.white,
                                             onPressed: () {
-                                              print("QR Generator");
+                                              showQRGenerated(
+                                                  e.documentID,
+                                                  usr.uid,
+                                                  e["name"],
+                                                  studentName,
+                                                  context);
                                             },
                                           ),
                                         ],

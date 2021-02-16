@@ -17,6 +17,9 @@ class EventScreen extends StatefulWidget {
 
 class _EventScreenState extends State<EventScreen> {
   String barcode = "";
+  String eventName = "";
+  String studentName = "";
+  bool error = false;
 
   Events event;
   @override
@@ -32,23 +35,23 @@ class _EventScreenState extends State<EventScreen> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(event.name),
+          title: Text(this.eventName),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text(barcode),
-                //Text('Would you like to approve of this message?'),
+                Text(this.studentName),
               ],
             ),
           ),
           actions: <Widget>[
-            TextButton(
-              child: Text('Done'),
-              onPressed: () {
-                print(barcode);
-                //Navigator.of(context).pop();
-              },
-            ),
+            if (!error)
+              TextButton(
+                child: Text('Done'),
+                onPressed: () {
+                  print(barcode);
+                  //Navigator.of(context).pop();
+                },
+              ),
             TextButton(
               child: Text(
                 'Cancel',
@@ -68,13 +71,36 @@ class _EventScreenState extends State<EventScreen> {
 
   Future scan() async {
     try {
+      error = false;
       String barcode = await FlutterBarcodeScanner.scanBarcode(
           "#ff6666", "Cancel", true, ScanMode.QR);
       if (barcode != "-1") {
         _showMyDialog();
       }
-      print(barcode);
-      setState(() => this.barcode = barcode);
+      if (barcode.startsWith("DDUAttendanceSystem")) {
+        final barcodeList = barcode.split(";");
+        print(barcodeList);
+        if (event.id == barcodeList[1]) {
+          String eventName = barcodeList[3];
+          String studentName = barcodeList[4];
+          setState(() {
+            this.eventName = eventName;
+            this.studentName = studentName;
+          });
+        } else {
+          setState(() {
+            this.error = true;
+            this.eventName = "Please provide valid QR code";
+            this.studentName = "This qr code is not for this event!!";
+          });
+        }
+      } else {
+        setState(() {
+          this.error = true;
+          this.eventName = "Please provide valid QR code";
+          this.studentName = "";
+        });
+      }
     } on PlatformException catch (e) {
       setState(() => this.barcode = 'Unknown error: $e');
     } on FormatException {
