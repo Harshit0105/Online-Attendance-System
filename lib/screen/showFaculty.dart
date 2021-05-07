@@ -53,12 +53,14 @@ class _ShowFacultyScreenState extends State<ShowFacultyScreen> {
         ),
       ),
       actions: <Widget>[
+        // ignore: deprecated_member_use
         new FlatButton(
           child: Text("cancel"),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
+        // ignore: deprecated_member_use
         new FlatButton(
             color: Colors.red,
             child: Text("Delete"),
@@ -69,7 +71,7 @@ class _ShowFacultyScreenState extends State<ShowFacultyScreen> {
       ],
     );
 
-    showDialog(context: context, child: dialog);
+    showDialog(builder: (context) => dialog, context: context);
   }
 
   static Future<bool> delete(
@@ -90,6 +92,7 @@ class _ShowFacultyScreenState extends State<ShowFacultyScreen> {
     } on FirebaseAuthException catch (e) {
       print(e.message);
       await app.delete();
+      // ignore: deprecated_member_use
       Scaffold.of(context).showSnackBar(
         SnackBar(
           content:
@@ -110,7 +113,7 @@ class _ShowFacultyScreenState extends State<ShowFacultyScreen> {
     var poss = await delete(email, pass, context);
     if (poss) {
       await FirebaseFirestore.instance
-          .collection("faculites")
+          .collection("faculties")
           // ignore: deprecated_member_use
           .document(docId)
           .delete()

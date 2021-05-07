@@ -259,7 +259,7 @@ class _ShowStudentScreenState extends State<ShowStudentScreen> {
       ],
     );
 
-    showDialog(context: context, child: dialog);
+    showDialog(builder: (context) => dialog, context: context);
   }
 
   static Future<bool> delete(

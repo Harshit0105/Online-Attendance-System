@@ -69,7 +69,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       ],
     );
 
-    showDialog(context: context, child: dialog);
+    showDialog(builder: (context) => dialog, context: context);
   }
 
   void showDecreaseSemesterDialogBox() {
@@ -94,7 +94,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       ],
     );
 
-    showDialog(context: context, child: dialog);
+    showDialog(builder: (context) => dialog, context: context);
   }
 
   void increase(String dept, BuildContext context) async {
